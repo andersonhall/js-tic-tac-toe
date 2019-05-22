@@ -1,0 +1,39 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+h1 {
+  text-align: center;
+  margin: 2rem auto;
+}
+
+.game-board {
+  display: grid;
+  grid-template-columns: repeat(3, 150px);
+  justify-content: center;
+  align-items: center;
+}
+
+.square {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 4rem;
+  background: #333;
+  color: #fff;
+  border: 1px solid #eee;
+  width: 150px;
+  height: 150px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.square:hover {
+  opacity: 0.9;
+}
