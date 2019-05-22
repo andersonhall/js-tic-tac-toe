@@ -83,6 +83,7 @@ const game = (() => {
 //  MY CUSTOM CONSOLE
 const p = document.createElement('p');
 p.textContent = 'console';
+p.style = 'color: red; font-size: 3rem; text-align: center';
 document.querySelector('.console').appendChild(p);
 
 // Start the game!
