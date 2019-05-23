@@ -1,83 +1,117 @@
 const gameBoard = (() => {
-  const squares = new Array(9);
+	const squares = new Array(9);
 
-  const render = () => {
-    // Select gameboard div element and append array of squares
-    const gameBoardEl = document.querySelector('.game-board');
-    gameBoardEl.innerHTML = '';
+	const winningCombos = [
+		[0, 1, 2],
+		[3, 4, 5],
+		[6, 7, 8],
+		[0, 3, 6],
+		[1, 4, 7],
+		[2, 5, 8],
+		[0, 4, 8],
+		[2, 4, 6],
+	];
 
-    for (let i = 0; i < gameBoard.squares.length; i++) {
-      let square = document.createElement('div');
-      square.dataset.index = i;
-      square.classList.add('square');
-      square.textContent = gameBoard.squares[i];
-      gameBoardEl.appendChild(square);
-    }
+	const render = () => {
+		// Select gameboard div element and append array of squares
+		const gameBoardEl = document.querySelector('.game-board');
+		gameBoardEl.innerHTML = '';
 
-    // Square Listeners
-    const squares = document.querySelectorAll('.square');
-    squares.forEach(square =>
-      square.addEventListener('click', e =>
-        game.getCurrentPlayer().takeSquare(e)
-      )
-    );
-  };
+		for (let i = 0; i < gameBoard.squares.length; i++) {
+			let square = document.createElement('div');
+			square.dataset.index = i;
+			square.classList.add('square');
+			square.textContent = gameBoard.squares[i];
+			gameBoardEl.appendChild(square);
+		}
 
-  return { squares, render };
+		// Square Listeners
+		const squares = document.querySelectorAll('.square');
+		squares.forEach(square =>
+			square.addEventListener('click', e => game.getCurrentPlayer().takeSquare(e))
+		);
+	};
+
+	return { squares, winningCombos, render };
 })();
 
 const playerFactory = (name, piece) => {
-  const takeSquare = e => {
-    const idx = e.target.dataset.index;
-    game.getCurrentPlayer().piece;
-    if (gameBoard.squares[idx] == null) {
-      gameBoard.squares[idx] = game.getCurrentPlayer().piece;
-    } else {
-      return false;
-    }
-    game.toggleCurrentPlayer();
-    gameBoard.render();
-  };
+	const takeSquare = e => {
+		const index = e.target.dataset.index;
+		game.getCurrentPlayer().piece;
+		if (gameBoard.squares[index] == undefined) {
+			gameBoard.squares[index] = game.getCurrentPlayer().piece;
+		} else {
+			return false;
+		}
+		game.checkWin();
+		game.toggleCurrentPlayer();
+		gameBoard.render();
+	};
 
-  return { name, piece, takeSquare };
+	return { name, piece, takeSquare };
 };
 
 const displayController = (() => {
-  // display logic
+	// display logic
 })();
 
 const game = (() => {
-  // Initialize the game
-  const init = () => {
-    gameBoard.render();
-  };
+	// Initialize the game
+	const init = () => {
+		gameBoard.render();
+	};
 
-  // Setup Players
-  const playerOne = playerFactory('Andy', 'X');
-  const playerTwo = playerFactory('Jenny', 'O');
-  let currentPlayer = playerOne;
+	// Setup Players
+	const playerOne = playerFactory('Andy', 'X');
+	const playerTwo = playerFactory('Jenny', 'O');
+	let currentPlayer = playerOne;
 
-  const getCurrentPlayer = () => {
-    if (currentPlayer === playerOne) {
-      return playerOne;
-    } else {
-      return playerTwo;
-    }
-  };
+	const getCurrentPlayer = () => {
+		if (currentPlayer === playerOne) {
+			return playerOne;
+		} else {
+			return playerTwo;
+		}
+	};
 
-  const toggleCurrentPlayer = () => {
-    if (currentPlayer === playerOne) {
-      currentPlayer = playerTwo;
-    } else {
-      currentPlayer = playerOne;
-    }
-  };
+	const toggleCurrentPlayer = () => {
+		if (currentPlayer === playerOne) {
+			currentPlayer = playerTwo;
+		} else {
+			currentPlayer = playerOne;
+		}
+	};
 
-  const checkWin = () => {
-    // win logic
-  };
+	const checkWin = () => {
+		const combos = gameBoard.winningCombos;
+		const squares = gameBoard.squares;
+		for (let i = 0; i < combos.length; i++) {
+			if (
+				squares[combos[i][0]] === 'X' &&
+				squares[combos[i][1]] === 'X' &&
+				squares[combos[i][2]] === 'X'
+			) {
+				console.log('p1 wins');
+				console.log(combos[i]);
+				return;
+			} else if (
+				squares[combos[i][0]] === 'O' &&
+				squares[combos[i][1]] === 'O' &&
+				squares[combos[i][2]] === 'O'
+			) {
+				console.log('p2 wins');
+				console.log(combos[i]);
+				return;
+			} else if (!squares.includes(undefined)) {
+				// it's a tie
+				console.log('tie');
+				return;
+			}
+		}
+	};
 
-  return { getCurrentPlayer, init, toggleCurrentPlayer, checkWin };
+	return { getCurrentPlayer, init, toggleCurrentPlayer, checkWin };
 })();
 
 //  MY CUSTOM CONSOLE
