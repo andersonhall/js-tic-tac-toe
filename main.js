@@ -1,161 +1,164 @@
 const gameBoard = (() => {
-  const squares = new Array(9);
+	const squares = new Array(9);
 
-  const render = () => {
-    // Select gameboard div element and append array of squares
-    const gameBoardEl = document.querySelector('.game-board');
-    gameBoardEl.innerHTML = '';
+	const render = () => {
+		// Select gameboard div element and append array of squares
+		const gameBoardEl = document.querySelector('.game-board');
+		gameBoardEl.innerHTML = '';
 
-    for (let i = 0; i < gameBoard.squares.length; i++) {
-      let square = document.createElement('div');
-      square.dataset.index = i;
-      square.classList.add('square');
-      square.textContent = gameBoard.squares[i];
-      gameBoardEl.appendChild(square);
-    }
+		for (let i = 0; i < gameBoard.squares.length; i++) {
+			let square = document.createElement('div');
+			square.dataset.index = i;
+			square.classList.add('square');
+			square.textContent = gameBoard.squares[i];
+			gameBoardEl.appendChild(square);
+		}
 
-    // Square Listeners
-    const squares = document.querySelectorAll('.square');
-    squares.forEach(square => square.addEventListener('click', handleClick));
-  };
+		// Square Listeners
+		const squares = document.querySelectorAll('.square');
+		squares.forEach(square => square.addEventListener('click', handleClick));
+	};
 
-  const handleClick = e => game.getCurrentPlayer().takeSquare(e);
+	const handleClick = e => game.getCurrentPlayer().takeSquare(e);
 
-  const disable = () => {
-    const squares = document.querySelectorAll('.square');
-    squares.forEach(square => square.removeEventListener('click', handleClick));
-  };
+	const disable = () => {
+		const squares = document.querySelectorAll('.square');
+		squares.forEach(square => square.removeEventListener('click', handleClick));
+	};
 
-  return { squares, disable, render };
+	return { squares, disable, render };
 })();
 
 const playerFactory = (name, piece) => {
-  const takeSquare = e => {
-    const index = e.target.dataset.index;
-    game.getCurrentPlayer().piece;
-    if (gameBoard.squares[index] == undefined) {
-      gameBoard.squares[index] = game.getCurrentPlayer().piece;
-    } else {
-      return false;
-    }
-    game.toggleCurrentPlayer();
-    displayController.toggleDisplay();
-    gameBoard.render();
-    game.checkWin();
-  };
+	const takeSquare = e => {
+		const index = e.target.dataset.index;
+		game.getCurrentPlayer().piece;
+		if (gameBoard.squares[index] == undefined) {
+			gameBoard.squares[index] = game.getCurrentPlayer().piece;
+		} else {
+			return false;
+		}
+		game.toggleCurrentPlayer();
+		displayController.toggleDisplay();
+		gameBoard.render();
+		game.checkWin();
+	};
 
-  return { name, piece, takeSquare };
+	return { name, piece, takeSquare };
 };
 
 const game = (() => {
-  const init = () => {
-    gameBoard.squares = new Array(9);
-    gameBoard.render();
-    displayController.toggleButton();
-    displayController.displayText.classList.remove('win');
-    displayController.displayText.classList.remove('tie');
-    displayController.toggleDisplay();
-  };
+	const init = () => {
+		playerOne = playerFactory(document.querySelector('#player-one').value || 'X', 'X');
+		playerTwo = playerFactory(document.querySelector('#player-two').value || 'O', 'O');
+		currentPlayer = playerOne;
+		gameBoard.squares = new Array(9);
+		gameBoard.render();
+		displayController.toggleButton();
+		displayController.displayText.classList.remove('win');
+		displayController.displayText.classList.remove('tie');
+		displayController.toggleDisplay();
+		displayController.hideForm();
+	};
 
-  // Setup Players
-  const playerOne = playerFactory('a', 'X');
-  const playerTwo = playerFactory('b', 'O');
-  let currentPlayer = playerOne;
+	const getCurrentPlayer = () => {
+		if (currentPlayer === playerOne) {
+			return playerOne;
+		} else {
+			return playerTwo;
+		}
+	};
 
-  const getCurrentPlayer = () => {
-    if (currentPlayer === playerOne) {
-      return playerOne;
-    } else {
-      return playerTwo;
-    }
-  };
+	const toggleCurrentPlayer = () => {
+		if (currentPlayer === playerOne) {
+			currentPlayer = playerTwo;
+		} else {
+			currentPlayer = playerOne;
+		}
+	};
 
-  const toggleCurrentPlayer = () => {
-    if (currentPlayer === playerOne) {
-      currentPlayer = playerTwo;
-    } else {
-      currentPlayer = playerOne;
-    }
-  };
+	const checkWin = () => {
+		const combos = [
+			[0, 1, 2],
+			[3, 4, 5],
+			[6, 7, 8],
+			[0, 3, 6],
+			[1, 4, 7],
+			[2, 5, 8],
+			[0, 4, 8],
+			[2, 4, 6],
+		];
 
-  const checkWin = () => {
-    const combos = [
-      [0, 1, 2],
-      [3, 4, 5],
-      [6, 7, 8],
-      [0, 3, 6],
-      [1, 4, 7],
-      [2, 5, 8],
-      [0, 4, 8],
-      [2, 4, 6],
-    ];
+		const squares = gameBoard.squares;
+		let winningCombo = null;
 
-    const squares = gameBoard.squares;
-    let winningCombo = null;
+		for (let i = 0; i < combos.length; i++) {
+			if (
+				squares[combos[i][0]] === 'X' &&
+				squares[combos[i][1]] === 'X' &&
+				squares[combos[i][2]] === 'X'
+			) {
+				// p1 wins
+				winningCombo = combos[i];
+				gameOver(playerOne, winningCombo);
+			} else if (
+				squares[combos[i][0]] === 'O' &&
+				squares[combos[i][1]] === 'O' &&
+				squares[combos[i][2]] === 'O'
+			) {
+				// p2 wins
+				winningCombo = combos[i];
+				gameOver(playerTwo, winningCombo);
+			}
+		}
 
-    for (let i = 0; i < combos.length; i++) {
-      if (
-        squares[combos[i][0]] === 'X' &&
-        squares[combos[i][1]] === 'X' &&
-        squares[combos[i][2]] === 'X'
-      ) {
-        // p1 wins
-        winningCombo = combos[i];
-        gameOver(playerOne, winningCombo);
-      } else if (
-        squares[combos[i][0]] === 'O' &&
-        squares[combos[i][1]] === 'O' &&
-        squares[combos[i][2]] === 'O'
-      ) {
-        // p2 wins
-        winningCombo = combos[i];
-        gameOver(playerTwo, winningCombo);
-      }
-    }
+		if (!squares.includes(undefined) && winningCombo === null) {
+			// it's a tie
+			gameOver();
+		}
+	};
 
-    if (!squares.includes(undefined) && winningCombo === null) {
-      // it's a tie
-      gameOver();
-    }
-  };
+	const gameOver = (player, combo) => {
+		if (player && combo) {
+			displayController.displayText.classList.add('win');
+			displayController.displayText.textContent = player.name + ' wins!';
+		} else {
+			displayController.displayText.classList.add('tie');
+			displayController.displayText.textContent = "IT'S A TIE!";
+		}
+		gameBoard.disable();
+		displayController.displayBtn.textContent = 'Play Again?';
+		displayController.toggleButton();
+	};
 
-  const gameOver = (player, combo) => {
-    if (player && combo) {
-      displayController.displayText.classList.add('win');
-      displayController.displayText.textContent = player.name + ' wins!';
-      gameBoard.disable();
-      displayController.displayBtn.textContent = 'Play Again?';
-      displayController.toggleButton();
-    } else {
-      gameBoard.disable();
-      displayController.displayText.classList.add('tie');
-      displayController.displayText.textContent = "IT'S A TIE!";
-      displayController.toggleButton();
-    }
-  };
-
-  return { getCurrentPlayer, init, toggleCurrentPlayer, checkWin };
+	return { getCurrentPlayer, init, toggleCurrentPlayer, checkWin };
 })();
 
 const displayController = (() => {
-  const displayBtn = document.querySelector('.display-btn');
-  const displayText = document.querySelector('.display-text');
-  const displayForm = document.querySelector('.display-form');
+	const displayBtn = document.querySelector('.display-btn');
+	const displayText = document.querySelector('.display-text');
+	const displayForm = document.querySelector('.display-form');
 
-  const toggleButton = () => {
-    displayBtn.classList.toggle('hide');
-  };
+	const toggleButton = () => {
+		displayBtn.classList.toggle('hide');
+	};
 
-  const toggleDisplay = () => {
-    if (game.getCurrentPlayer()) {
-      displayText.textContent = `${game.getCurrentPlayer().name}'s turn`;
-    }
-  };
+	const toggleDisplay = () => {
+		if (game.getCurrentPlayer()) {
+			displayText.textContent = `${game.getCurrentPlayer().name}'s turn`;
+		}
+	};
 
-  return { toggleButton, toggleDisplay, displayText, displayBtn };
+	const hideForm = () => {
+		displayForm.classList.add('hide');
+	};
+
+	return { toggleButton, toggleDisplay, hideForm, displayText, displayBtn };
 })();
 
 // Start the game!
+displayController.displayText.textContent = 'Enter Player Names';
+
 gameBoard.render();
 gameBoard.disable();
 
