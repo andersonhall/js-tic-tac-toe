@@ -1,35 +1,87 @@
 * {
-	margin: 0;
-	padding: 0;
-	box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 body {
-	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(rgb(107, 214, 218), rgb(78, 163, 219));
+  height: 100vh;
+  overflow: hidden;
 }
 
 h1 {
-	text-align: center;
-	margin: 2rem auto;
+  text-align: center;
+  margin: 2rem auto;
+  color: #fff;
 }
 
 .game-board {
-	display: grid;
-	grid-template-columns: repeat(3, 150px);
-	justify-content: center;
-	align-items: center;
+  display: grid;
+  grid-template-columns: repeat(3, 150px);
+  justify-content: center;
+  align-items: center;
 }
 
 .square {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	font-size: 4rem;
-	background: #333;
-	color: #fff;
-	border: 1px solid #eee;
-	width: 150px;
-	height: 150px;
-	cursor: pointer;
-	user-select: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 4rem;
+  background: #333;
+  color: #fff;
+  border: 1px solid #eee;
+  width: 150px;
+  height: 150px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.display {
+  margin: 2rem auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.display-btn {
+  border: none;
+  background: #eee;
+  color: #333;
+  margin-top: 2rem;
+  padding: 1.2rem 1.6rem;
+  font-weight: 500;
+  font-size: 1.2rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+  outline: none;
+}
+
+.display-btn:hover {
+  background: #ddd;
+}
+
+.display-text {
+  padding: 1rem 2rem;
+  font-size: 2rem;
+}
+
+.display-form {
+  /* stuff */
+}
+
+.win {
+  background: rgb(86, 182, 42);
+  color: #fff;
+}
+
+.tie {
+  background: rgb(219, 198, 78);
+  color: #333;
+}
+
+.hide {
+  display: none;
 }
